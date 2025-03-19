@@ -1,7 +1,7 @@
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
+from sqlalchemy.orm import Session
 
 from models import db, Message
 
@@ -48,7 +48,7 @@ def create_message():
 # ✅ PATCH an existing message (update body only)
 @app.route('/messages/<int:id>', methods=['PATCH'])
 def update_message(id):
-    message = Message.query.get(id)
+    message = db.session.get(Message, id)  # 🔥 Updated for SQLAlchemy 2.0+
 
     if not message:
         return jsonify({"error": "Message not found"}), 404
@@ -67,7 +67,7 @@ def update_message(id):
 # ✅ DELETE a message
 @app.route('/messages/<int:id>', methods=['DELETE'])
 def delete_message(id):
-    message = Message.query.get(id)
+    message = db.session.get(Message, id)  # 🔥 Updated for SQLAlchemy 2.0+
 
     if not message:
         return jsonify({"error": "Message not found"}), 404
